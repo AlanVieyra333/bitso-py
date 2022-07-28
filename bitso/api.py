@@ -597,7 +597,7 @@ class Api(object):
         return Withdrawal._NewFromJsonDict(resp['payload'])
 
     
-    def ripple_withdrawal(self, currency, amount, address):
+    def ripple_withdrawal(self, currency, amount, address, destination_tag=''):
         """Triggers a ripple withdrawal from your account
 
         Args:
@@ -617,6 +617,8 @@ class Api(object):
         parameters['currency'] = str(currency).encode('utf-8')
         parameters['amount'] = str(amount).encode('utf-8')
         parameters['address'] = address
+        if destination_tag != '':
+          parameters['destination_tag'] = destination_tag
         resp = self._request_url(url, 'POST', params=parameters, private=True)
         return Withdrawal._NewFromJsonDict(resp['payload'])
 

@@ -32,6 +32,7 @@ import json
 import time
 import requests
 from future.utils import iteritems
+import uuid
 
 try:
     basestring
@@ -621,6 +622,30 @@ class Api(object):
           parameters['destination_tag'] = destination_tag
         resp = self._request_url(url, 'POST', params=parameters, private=True)
         return Withdrawal._NewFromJsonDict(resp['payload'])
+      
+    
+    def consumer_contacts(self, currency):
+        url = '%s/consumer-contacts/?currency=%s' % (self.base_url, currency)
+        resp = self._request_url(url, 'GET', private=True)
+        return resp['payload']
+      
+      
+    def create_consumer_contact(self):
+        url = '%s/consumer-contacts/' % (self.base_url)
+        parameters = json.loads('''''')
+        print('parameters', parameters)
+        resp = self._request_url(url, 'POST', params=parameters, private=True)
+        return resp['payload']  
+    
+      
+    def crypto_withdrawals(self, amount, contact_id):
+        url = '%s/withdrawals/' % self.base_url
+        parameters = {}
+        parameters['amount'] = str(amount).encode('utf-8')
+        parameters['contact_id'] = contact_id
+        parameters['origin_id'] = str(uuid.uuid4().hex)
+        resp = self._request_url(url, 'POST', params=parameters, private=True)
+        return Withdrawal._NewFromJsonDict(resp['payload'])  
 
     
     def spei_withdrawal(self, amount=None, first_names=None, last_names=None, clabe=None, notes_ref=None, numeric_ref=None):

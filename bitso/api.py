@@ -624,20 +624,25 @@ class Api(object):
         return Withdrawal._NewFromJsonDict(resp['payload'])
       
     
-    def consumer_contacts(self, currency):
+    def get_consumer_contacts(self, currency):
         url = '%s/consumer-contacts/?currency=%s' % (self.base_url, currency)
         resp = self._request_url(url, 'GET', private=True)
         return resp['payload']
-      
-      
-    def create_consumer_contact(self):
+
+
+    def create_consumer_contact(self, body):
         url = '%s/consumer-contacts/' % (self.base_url)
-        parameters = json.loads('''''')
-        print('parameters', parameters)
+        parameters = json.loads(body)
         resp = self._request_url(url, 'POST', params=parameters, private=True)
-        return resp['payload']  
-    
-      
+        return resp['payload']
+
+
+    def delete_consumer_contact(self, contact_id):
+        url = '%s/consumer-contacts/%s' % (self.base_url, contact_id)
+        resp = self._request_url(url, 'DELETE', private=True)
+        return resp['payload']
+
+
     def crypto_withdrawals(self, amount, contact_id):
         url = '%s/withdrawals/' % self.base_url
         parameters = {}

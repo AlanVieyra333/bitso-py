@@ -650,9 +650,17 @@ class Api(object):
         parameters['contact_id'] = contact_id
         parameters['origin_id'] = str(uuid.uuid4().hex)
         resp = self._request_url(url, 'POST', params=parameters, private=True)
-        return Withdrawal._NewFromJsonDict(resp['payload'])  
+        return Withdrawal._NewFromJsonDict(resp['payload'])
 
-    
+
+    def crypto_withdrawals_custom(self, body):
+        url = '%s/withdrawals/' % self.base_url
+        parameters = json.loads(body)
+        parameters['origin_id'] = str(uuid.uuid4().hex)
+        resp = self._request_url(url, 'POST', params=parameters, private=True)
+        return Withdrawal._NewFromJsonDict(resp['payload'])
+
+
     def spei_withdrawal(self, amount=None, first_names=None, last_names=None, clabe=None, notes_ref=None, numeric_ref=None):
         """Triggers a SPEI withdrawal from your account.
         These withdrawals are immediate during banking hours for some banks (M-F 9:00AM - 5:00PM Mexico City Time), 24 hours for others.
@@ -1003,7 +1011,10 @@ class Api(object):
             if 'error' in data[0]:
                 raise ApiError(data[0]['error'])
         
-
+    def get_withdrawal_methods(self, currency):
+        url = '%s/withdrawal_methods/%s' % (self.base_url, currency)
+        resp = self._request_url(url, 'GET', private=True)
+        return resp['payload']
      
      
 
